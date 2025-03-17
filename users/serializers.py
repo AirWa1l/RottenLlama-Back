@@ -2,6 +2,11 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
+from django.core.mail import send_mail
+from django.utils.crypto import get_random_string
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
+
 
 User = get_user_model()
 
@@ -64,3 +69,72 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                 "username": user.username,
             },
         }
+
+#Logica para recuperacion de password
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        try:
+            user = User.objects.get(email=value)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("No user found with this email address.")
+        return value
+
+    def send_reset_email(self, request):  # Asegúrate de pasar el 'request' aquí
+        email = self.validated_data["email"]
+        user = User.objects.get(email=email)
+
+        # Generar un token aleatorio
+        token = get_random_string(length=32)
+
+        # Guardar el token en el usuario
+        user.reset_password_token = token
+        user.save()
+
+        # Construir el enlace con el token (sin el dominio)
+        reset_url = reverse('password_reset_confirm', args=[token])
+
+        # Obtener el dominio completo (por ejemplo: localhost:8000)
+        domain = get_current_site(request).domain
+
+        # Construir la URL completa
+        full_url = f"http://{domain}{reset_url}"
+
+        # Enviar el correo con el enlace para restablecer la contraseña
+        subject = "Instructions to Reset Your Password"
+        message = f"""
+Hello {user.username},
+
+We have received a request to reset the password for your SpittinLlama account. 
+If you did not request this change, please ignore this email.
+
+To reset your password, simply click the link below:
+
+{full_url}
+
+This link will expire in 24 hours, so be sure to use it before then.
+If you have any issues or questions, feel free to contact us.
+Thank you for using RottenLlama!
+
+Best regards,
+The SpittinLlama Team
+"""
+        send_mail(
+            subject,
+            message,
+            'no-reply@tuapp.com',  # Desde qué correo se enviará
+            [email],  # El destinatario
+            fail_silently=False,
+        )
+
+        
+
+class ChangePasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(write_only=True, required=True)
+    confirm_password = serializers.CharField(write_only=True, required=True)
+
+    def validate(self, data):
+        if data['password'] != data['confirm_password']:
+            raise serializers.ValidationError("Las contraseñas no coinciden.")
+        return data
