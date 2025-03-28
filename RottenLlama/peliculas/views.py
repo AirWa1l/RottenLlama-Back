@@ -44,3 +44,19 @@ class PeliculasPopularesView(APIView):
         serializer = PeliculaSerializer(peliculas_populares, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+#Metodo CRUD para las peliculas
+
+class PeliculaDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Pelicula.objects.all()
+    serializer_class = PeliculaSerializer
+
+class PeliculasRecientesView(generics.ListAPIView):
+    """
+    Endpoint para obtener las películas más recientes, ordenadas por fecha descendente.
+    """
+    serializer_class = PeliculaSerializer
+
+    def get_queryset(self):
+        return Pelicula.objects.all().order_by('-fecha')[:10]  # Devuelve las 10 películas más recientes
+
+
