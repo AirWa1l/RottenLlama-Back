@@ -22,7 +22,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt 
       - name: Run tests with coverage
-        run: npm test -- --coverage
+        run: |
+          coverage run manage.py test
       - name: Download SonarQube Scanner
         run: |
           curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
