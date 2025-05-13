@@ -41,5 +41,11 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           ./sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner \
-            -Dsonar.login=$SONAR_TOKEN
+            -Dsonar.login=$SONAR_TOKEN \
+            -Dsonar.host.url=https://sonarcloud.io/project/overview?id=AirWa1l_RottenLlama-Back \
+            -Dsonar.projectKey=AirWa1l_RottenLlama-Back \
+            -Dsonar.projectName=RottenLlama-Back \
+            -Dsonar.projectVersion=1.0 \
+            -Dsonar.sources=. \
+            -Dsonar.python.coverage.reportPaths=coverage.xml
       
