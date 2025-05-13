@@ -30,6 +30,7 @@ jobs:
       - name: Run tests with coverage
         run: |
           python -m coverage run manage.py test
+          python -m coverage xml
       - name: Download SonarQube Scanner
         run: |
           curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
