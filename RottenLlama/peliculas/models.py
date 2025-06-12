@@ -5,7 +5,7 @@ class Pelicula(models.Model):
     fecha = models.IntegerField()
     categoria = models.CharField(max_length=100)
     calificacion = models.DecimalField(max_digits=3, decimal_places=1)
-    
+    director = models.CharField(max_length=100)
 
     def __str__(self):
         return self.titulo

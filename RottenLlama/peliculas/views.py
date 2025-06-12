@@ -26,13 +26,17 @@ class PeliculaPorCategoriaView(generics.ListAPIView):
         """
         categoria = self.request.query_params.get('categoria', None)
         if categoria:
-            return Pelicula.objects.filter(categoria__nombre__iexact=categoria)  # Filtra ignorando mayúsculas/minúsculas
+            # Aquí: iexact en el CharField 'categoria'
+            return Pelicula.objects.filter(categoria__iexact=categoria)
         return Pelicula.objects.all()
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         if not queryset.exists():
-            return Response({"mensaje": "No se encontraron películas en esta categoría."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"mensaje": "No se encontraron películas en esta categoría."},
+                status=status.HTTP_404_NOT_FOUND
+            )
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
