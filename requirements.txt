@@ -14,3 +14,7 @@ django-cors-headers>=4.3.1
 # Django REST Framework and JWT Authentication
 djangorestframework>=3.14.0  # DRF for API development
 djangorestframework-simplejwt>=5.3.0  # JWT authentication
+
+# Testing
+pytest
+pytest-django
