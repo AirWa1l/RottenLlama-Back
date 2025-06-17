@@ -5,7 +5,7 @@ pillow>=10.2.0  # Image processing
 
 # Database
 #psycopg2-binary>=2.9.9  # PostgreSQL
-mysqlclient>=2.2.0  # MySQL
+#mysqlclient>=2.2.0  # MySQL
 
 # Permitir LLamadas del Front
 django-cors-headers>=4.3.1
