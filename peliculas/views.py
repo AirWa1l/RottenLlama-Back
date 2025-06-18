@@ -54,6 +54,10 @@ class PeliculaDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Pelicula.objects.all()
     serializer_class = PeliculaSerializer
 
+class PeliculaCreateView(generics.CreateAPIView):
+    queryset = Pelicula.objects.all()
+    serializer_class = PeliculaSerializer
+
 class PeliculasRecientesView(generics.ListAPIView):
     """
     Endpoint para obtener las películas más recientes, ordenadas por fecha descendente.
