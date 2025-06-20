@@ -12,8 +12,16 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from dotenv import load_dotenv
+from django.core.exceptions import ImproperlyConfigured
 
 import os
+
+def get_secret(key, default=None):
+    """Obtiene la secret key de variables de entorno o devuelve default"""
+    value = os.getenv(key, default)
+    if value is None:
+        raise ImproperlyConfigured(f"Set the {key} environment variable")
+    return value
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +33,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 load_dotenv()  # Carga las variables del archivo .env
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = get_secret('SECRET_KEY', 'dummy-key-for-testing-only')  # Clave dummy para testing
 if not SECRET_KEY:
     raise ValueError("No SECRET_KEY set for Django application")
 
