@@ -29,8 +29,8 @@ jobs:
           pip show coverage
       - name: Run tests with coverage
         run: |
-          python -m coverage run manage.py test
-          python -m coverage xml
+          pytest --cov=. --cov-report=xml
+          coverage xml -i
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
