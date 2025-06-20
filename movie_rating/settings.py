@@ -16,12 +16,30 @@ from django.core.exceptions import ImproperlyConfigured
 
 import os
 
-def get_secret(key, default=None):
-    """Obtiene la secret key de variables de entorno o devuelve default"""
-    value = os.getenv(key, default)
-    if value is None:
-        raise ImproperlyConfigured(f"Set the {key} environment variable")
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
+
+def get_email_setting(name, default=None):
+    """Obtiene configuraciones de email con validación segura"""
+    value = os.getenv(f'EMAIL_{name}', default)
+    
+    # Validación solo en producción
+    if ENVIRONMENT == 'production' and value in (None, ''):
+        raise ImproperlyConfigured(
+            f'EMAIL_{name} is required in production environment'
+        )
     return value
+
+def get_env_variable(var_name, default=None):
+    """Obtiene variables de entorno o devuelve un valor por defecto"""
+    try:
+        value = os.environ[var_name]
+        if not value:
+            return default
+        return value
+    except KeyError:
+        if default is not None:
+            return default
+        raise ImproperlyConfigured(f"La variable de entorno {var_name} es requerida")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,12 +51,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 load_dotenv()  # Carga las variables del archivo .env
 
-SECRET_KEY = get_secret('SECRET_KEY', 'dummy-key-for-testing-only')  # Clave dummy para testing
+SECRET_KEY = get_env_variable('SECRET_KEY', 'dummy-key-for-development-only')
 if not SECRET_KEY:
     raise ValueError("No SECRET_KEY set for Django application")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = get_env_variable('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = []
 
@@ -150,13 +168,18 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "spittyllamanotreplay@gmail.com"
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_BACKEND = get_email_setting('BACKEND', 'django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = get_email_setting('HOST', '')
+EMAIL_PORT = get_email_setting('PORT', '587')
+EMAIL_USE_TLS = get_email_setting('USE_TLS', 'True').lower() == 'true'
+EMAIL_HOST_USER = get_email_setting('HOST_USER', '')
+EMAIL_HOST_PASSWORD = get_email_setting('HOST_PASSWORD', '')
 
-if not EMAIL_HOST_PASSWORD and DEBUG is False:
-    raise ValueError("Email password not configured for production")
+# Validación solo en producción (usando DEBUG y ENVIRONMENT)
+IS_PRODUCTION = not DEBUG and os.getenv('ENVIRONMENT') == 'production'
 
+if IS_PRODUCTION and not EMAIL_HOST_PASSWORD:
+    raise ValueError(
+        "Email password not configured for production. "
+        "Set EMAIL_HOST_PASSWORD environment variable."
+    )

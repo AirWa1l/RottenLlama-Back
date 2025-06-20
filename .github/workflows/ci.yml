@@ -11,6 +11,8 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
     env:
+      ENVIRONMENT: "testing"
+      EMAIL_BACKEND: "django.core.mail.backends.locmem.EmailBackend"
       SECRET_KEY: "dummy-test-key-1234567890"  # Clave específica para testing
       DJANGO_SETTINGS_MODULE: "movie_rating.settings"
     steps:
