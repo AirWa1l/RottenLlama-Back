@@ -24,13 +24,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install coverage
           pip install -r requirements.txt
+          pip install pytest pytest-cov
       - name: Verify coverage installation
         run: |
           pip show coverage
       - name: Run tests with coverage
         run: |
-          python -m coverage run manage.py test
-          python -m coverage xml
+          pytest --cov=. --cov-report=xml
+          coverage xml -i
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:

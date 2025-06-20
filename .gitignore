@@ -4,3 +4,14 @@ users/migrations
 # Ignore Python cache files
 __pycache__/
 .pyc
+
+# Archivos generados por coverage
+.coverage
+.coverage.*
+cover/
+*.cover
+.hypothesis/
+.pytest_cache/
+htmlcov/
+coverage.xml
+*.py,cover
