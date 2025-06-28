@@ -120,11 +120,14 @@ WSGI_APPLICATION = 'movie_rating.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
+        'NAME': 'postgres',  
+        'USER': 'postgres.bovuleizjnyijvtfaavg',
         'PASSWORD': 'rotten',
-        'HOST': 'db.bovuleizjnyijvtfaavg.supabase.co', 
+        'HOST': 'aws-0-us-east-2.pooler.supabase.com',
         'PORT': '5432',
+        'OPTIONS': {
+            'sslmode': 'require'  
+        }
     }
 }
 
