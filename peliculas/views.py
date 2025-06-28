@@ -3,9 +3,20 @@ from .models import Pelicula
 from .serializers import PeliculaSerializer
 from rest_framework.filters import OrderingFilter
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
+import json
+
+@api_view(['POST'])
+def import_peliculas(request):
+    serializer = PeliculaSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 #endpoint para filtros
 class PeliculaListView(generics.ListAPIView):
     queryset = Pelicula.objects.all()
