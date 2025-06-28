@@ -11,6 +11,7 @@ class Pelicula(models.Model):
             MaxValueValidator(Decimal('10.0'))
         ])
     director = models.CharField(max_length=100)
+    imagen_url = models.URLField(max_length=500, null=True, blank=True)
 
     def __str__(self):
         return self.titulo
