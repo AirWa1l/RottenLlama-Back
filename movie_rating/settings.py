@@ -58,7 +58,7 @@ if not SECRET_KEY:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = get_env_variable('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["18.230.67.228"]
 
 
 # Application definition
@@ -89,6 +89,7 @@ MIDDLEWARE = [
 ]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://18.230.67.228",
 ]
 CORS_ALLOW_CREDENTIALS = True
 
