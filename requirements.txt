@@ -3,9 +3,6 @@ django-environ>=0.11.2  # Environment variable management
 django-extensions>=3.2.3  # Extra Django tools
 pillow>=10.2.0  # Image processing
 
-# Database
-#psycopg2-binary>=2.9.9  # PostgreSQL
-#mysqlclient>=2.2.0  # MySQL
 
 # Permitir LLamadas del Front
 django-cors-headers>=4.3.1
@@ -20,3 +17,6 @@ pytest-django
 
 #validation 
 python-dotenv
+
+#Database
+psycopg2-binary
